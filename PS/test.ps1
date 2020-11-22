@@ -1,2 +1,7 @@
-$date = get-date
-Get-ChildItem C:\Windows\system32\* |  Select-Object FullName, Extension,@{Name='DaysOld';E={((get-date) - ($_.CreationTime)).days}}
+$application = $null
+$application = Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* |  Select-Object Publisher,DisplayName,DisplayVersion,InstallDate,@{'Name'="Version";E={"32"}}
+$application += Get-ItemProperty -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |  Select-Object Publisher,DisplayName,DisplayVersion,InstallDate,@{'Name'="Version";E={"64"}}
+$application | ft
+
+
+
