@@ -1,0 +1,28 @@
+//set up restartLogs as array/string
+
+var allVMs = Server.findAllForType("VC:VirtualMachine");  
+for each (var vm in allVMs){
+     var beginTime = new Date();
+     //Set the Start Date where we chose to parse the events
+     beginTime.setHours(beginTime.getHours()-24);
+     //Create Event Specifications
+     var vcEventFilterSpec = new VcEventFilterSpec();
+     var spec = new VcEventFilterSpec();
+     var vcEventFilterSpecByTime = new VcEventFilterSpecByTime();
+     vcEventFilterSpec.time = vcEventFilterSpecByTime;
+     vcEventFilterSpecByTime.beginTime = beginTime;
+     //Filter by the Type ID of HA Event
+     spec.eventTypeId = ["com.vmware.vc.ha.VmRestartedByHAEvent"];
+     spec.entity = new VcEventFilterSpecByEntity();
+     spec.entity.entity = vm;
+     spec.entity.recursion = VcEventFilterSpecRecursionOption.self;
+     spec.time = vcEventFilterSpecByTime;
+     var events = vm.sdkConnection.eventManager.queryEvents(spec);
+     //For each VM we query VM restart Event on the last 24 hours
+     for each (var ev in events) {
+          System.log("fullFormattedMessage: " + ev.fullFormattedMessage);
+          restartLogs.push(ev);
+      }
+}
+
+ 

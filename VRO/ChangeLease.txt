@@ -1,0 +1,43 @@
+//host - vCACCAFE:VCACHost - vRA CAFE Host
+//specific VMNAME - var resources =Server.findAllForType("VCACCAFE:CatalogResource", vmName)[0];
+//operationName is a string set to 'Change Lease'
+//numberOfDaysToAdd is a number for days
+
+var current = new Date(); 
+var newLeaseDate = new Date();
+newLeaseDate.setDate(newLeaseDate.getDate() + numberOfDaysToAdd);
+System.log("new date:" + newLeaseDate);
+var newDate = current + numberOfDaysToAdd;
+var reminderList = new Array();
+var catalogResources = vCACCAFEEntitiesFinder.findCatalogResources(host);    
+for each (catalogResource in catalogResources) { 
+    leaseTime=catalogResource.getLeaseForDisplay();  
+    System.log("catalogResource: " + catalogResource.name);
+    System.log("leaseTime: " + leaseTime);
+    if ((leaseTime != null)&&(resourceType=catalogResource.resourceTypeRef.getLabel() == "Deployment")){ 
+        var expireDate=catalogResource.lease.getEnd();  
+        timeDiff=expireDate-current;
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+		System.log("expireDate: " + expireDate);
+		System.log("diffDays: " + diffDays);
+		var myvCACCAFEDateTimeLiteral = new vCACCAFEDateTimeLiteral(newLeaseDate) ;  
+		//Get all the operations that are available on the deployment  
+		var operations = catalogResource.getOperations();    
+		//Locate the deployment change lease operation and store it  
+		for each (operation in operations) {  
+			if (operation.name.toLowerCase() == operationName.toLowerCase()) {  
+			break;  
+			}  
+		}
+		if (operation.getName().toLowerCase() == operationName.toLowerCase()){
+			System.log("operation: " + operation.name);
+			var inputs = new Properties();
+			inputs.put("provider-ExpirationDate", myvCACCAFEDateTimeLiteral);  
+			var leaseActionRequest = System.getModule("com.vmware.library.vcaccafe.request").requestResourceAction(operation,inputs);
+			var latestActionRequest = vCACCAFEEntitiesFinder.getResourceActionRequest(cafeHost, leaseActionRequest.getId());
+			//Extract the status of the action request
+			var stateName = latestActionRequest.getStateName();
+			System.log("Change Lease Request is currently in state: " + stateName);
+		}
+	}  
+}  
