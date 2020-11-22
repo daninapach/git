@@ -52,4 +52,16 @@ function get-friendySize{
     }
 }
 
+# יצירת אובייקט עם פרופרטי
+$obj = New-Object -TypeName PSObject
+$obj = '' | Select-Object -Property Name
 
+# או 
+Add-Member -InputObject $obj -MemberType NoteProperty color -Value "Red"
+
+# בשיטה החדשה ניתן לעשות את זה בצורה חדשה
+$obj = New-Object -TypeName PSObject -Property @{
+    color = ''
+    Size = ''
+    Prcie = ''
+}
