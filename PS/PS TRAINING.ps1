@@ -79,3 +79,6 @@ $obj = [PSCustomObject]@{
     Prcie = ''
 }
 
+# קבלה של ARRAY 
+[string[]]
+
