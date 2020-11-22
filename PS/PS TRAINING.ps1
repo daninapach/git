@@ -59,9 +59,23 @@ $obj = '' | Select-Object -Property Name
 # או 
 Add-Member -InputObject $obj -MemberType NoteProperty color -Value "Red"
 
-# בשיטה החדשה ניתן לעשות את זה בצורה חדשה
+# בשיטה החדשה ניתן לעשות את זה בצורה חדשה אך לא בסדר הרצוי
 $obj = New-Object -TypeName PSObject -Property @{
     color = ''
     Size = ''
     Prcie = ''
 }
+# בשיטה החדשה ניתן לעשות את זה בצורה חדשה בסדר הרצוי
+$obj = New-Object -TypeName PSObject -Property ([ordered]@{
+    color = ''
+    Size = ''
+    Prcie = ''
+})
+
+# בשיטה החדשה ניתן לעשות את זה בצורה חדשה
+$obj = [PSCustomObject]@{
+    color = 'Test'
+    Size = ''
+    Prcie = ''
+}
+

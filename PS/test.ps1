@@ -1,4 +1,2 @@
-$obj = New-Object -TypeName PSObject
-$obj = '' | Select-Object -Property Name
-
-Add-Member -InputObject $obj -MemberType NoteProperty color -Value "Red"
+$date = get-date
+Get-ChildItem C:\Windows\system32\* |  Select-Object FullName, Extension,@{Name='DaysOld';E={((get-date) - ($_.CreationTime)).days}}
